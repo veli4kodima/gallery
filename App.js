@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { Apprender, StyleSheet, Image, TouchableWithoutFeedback, View, Dimensions, FlatList, ScrollView, Modal } from 'react-native';
+import { Apprender, StyleSheet, Image, TouchableWithoutFeedback, View, Dimensions, FlatList, ScrollView, Modal, Text } from 'react-native';
 import ImageElement from './ImageElement';
 
 const url = 'https://jsonplaceholder.typicode.com/photos?_page=1&_limit=20'
@@ -12,7 +12,7 @@ export default class App extends Component {
   }
 
   setModalVisible(visible, imageKey) {
-    this.setState({modalImage: this.state.images[imageKey]});
+    this.setState({modalImage: imageKey});
     this.setState({modalVisible: visible});
   }
 
@@ -32,14 +32,15 @@ export default class App extends Component {
   render() {
     let images = this.state.images.map((val, key) => {
       return <TouchableWithoutFeedback key={key} 
-              onPress={() => {this.setModalVisible(true, val.key)}} >
+              onPress={() => {this.setModalVisible(true, val.url)}} >
                 <View style={styles.imagewrap}>
                   <ImageElement url={val.url}></ImageElement>
                 </View>
               </TouchableWithoutFeedback>
     })
+
+      
     return (
-        <ScrollView>
           <View style={styles.container}>
             <Modal style={styles.modal} 
               animationType={'fade'}
@@ -48,12 +49,22 @@ export default class App extends Component {
               onRequestClose={() => {}}
             >
               <View style={styles.modal}>
+                <Text style={styles.text} onPress={() => {this.setModalVisible(false)}}>&#10006;</Text>
                 <ImageElement url={this.state.modalImage}></ImageElement>
               </View>
             </Modal>
             {images}
+            {/* <FlatList
+              data={this.state.images}
+              renderItem={({ item }) => {
+                  <ImageElement url={item.url}></ImageElement>
+              }}
+              keyExtractor={
+                (index) => { return index.id }
+              }
+            >
+            </FlatList> */}
           </View>
-        </ScrollView>
     );
   }
 }
@@ -78,7 +89,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0, 0.9)'
   },
   text: {
-    color: '#fff'
+    color: '#fff',
+    textAlign: 'right',
+    fontSize: 20,
   }
 });
 
